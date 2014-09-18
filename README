@@ -1,0 +1,73 @@
+DebiaN900
+
+A set of scripts to facilitate the installation of Debian GNU/Linux on the N900.
+
+
+FILES
+
+build_kernel.sh - Checks out the kernel source from Git and builds it.
+
+kernel.conf - The configuration file for build_kernel.sh.
+
+install_debian.sh - Bootstraps a Debian system and runs post-install
+configuration, pulling in a built kernel and modules.  Creates the file
+configure_u-boot.sh to be run under Maemo.
+
+debian.conf - The configuration file for install_debian.sh.
+
+configure_u-boot.sh - Configures U-Boot on the N900.  This script is generated
+by install_debian.sh.
+
+
+GENERAL REQUIREMENTS
+
+An N900 with pali's U-Boot installed.
+
+A Linux PC with the following:
+- A POSIX compatible shell
+- GCC cross compiler for ARM Cortex-A processors
+- qemu-debootstrap
+- Internet access
+
+
+GENERAL USAGE
+
+- If necessary, configure CROSS_COMPILE in kernel.conf with the prefix of your
+cross compiler executable.
+
+- Run build_kernel.sh on a PC to checkout and build a kernel.
+
+- Create an ext4 slice on an SD card and mount it to /mnt or configure the mount
+point in debian.conf.
+
+As a safety measure, the Debian install script will only install to a clean
+file system (it should contain nothing but the lost+found directory).  If the
+script fails or is interrupted, anything that has been installed will need to be
+removed before the script can be run again.
+
+- Run install_debian.sh on your PC to install to the SD card.
+
+- Unmount SD card.
+
+- Run configure_u-boot.sh on your N900 to complete the installation.
+
+
+LICENCE
+
+Distributable under the terms of the GNU GPL version 3.
+
+
+REFERENCES
+
+http://wiki.debian.org/pkg-n900
+http://wiki.debian.org/MaemoAndSqueeze
+http://wiki.debian.org/n900-wheezy-armhf
+http://elektranox.org/n900/index.html
+http://elinux.org/N900
+
+
+THANKS
+
+Many thanks to all of those who have worked on the pkg-n900 project and a
+special thanks to sre, pali, freemangordon and everyone else who has worked on
+upstreaming N900 Linux kernel patches.
