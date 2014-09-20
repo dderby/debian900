@@ -20,8 +20,6 @@ clean_up()
 		test `grep -q $path /proc/mounts` && umount $path
 	done
 	
-	test -f $MOUNTPOINT/etc/udev/rules.d/70-persistent-net.rules && chattr -i $MOUNTPOINT/etc/udev/rules.d/70-persistent-net.rules
-	
 	echo "Installation failed" >&2
 	exit 1
 }
@@ -187,8 +185,8 @@ sed -i '/exit 0/d' $MOUNTPOINT/etc/rc.local
 printf "hwclock -u -s\nexit 0\n" >> $MOUNTPOINT/etc/rc.local
 
 # This temporary workaround prevents udev from changing the wlan0 device name
-touch $MOUNTPOINT/etc/udev/rules.d/70-persistent-net.rules
-chattr +i $MOUNTPOINT/etc/udev/rules.d/70-persistent-net.rules
+echo "# Unknown net device (/devices/68000000.ocp/480ba000.spi/spi_master/spi4/spi4.0/net/wlan0) (wl1251)" > $MOUNTPOINT/etc/udev/rules.d/70-persistent-net.rules
+echo 'SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="?*", ATTR{dev_id}=="0x0", ATTR{type}=="1", KERNEL=="wlan*", NAME="wlan0"' >> $MOUNTPOINT/etc/udev/rules.d/70-persistent-net.rules
 
 # Copy kernel zImage to Debian
 cp $ZIMAGE $MOUNTPOINT/boot/zImage-$KERNELRELEASE
