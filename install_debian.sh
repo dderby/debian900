@@ -272,7 +272,7 @@ done
 
 # Set unprivileged user password
 echo "Setting $USERNAME user password..."
-useradd -c "$REALNAME" -m $USERNAME
+useradd -c "$REALNAME" -m -s /bin/bash $USERNAME
 while ! passwd $USERNAME; do
 	:
 done
