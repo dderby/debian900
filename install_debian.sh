@@ -200,6 +200,23 @@ rm $MOUNTPOINT/lib/modules/$KERNELRELEASE/build $MOUNTPOINT/lib/modules/$KERNELR
 # Set up initramfs modules
 printf "omaplfb\nsd_mod\nomap_hsmmc\nmmc_block\nomap_wdt\ntwl4030_wdt\n" >> $MOUNTPOINT/etc/initramfs-tools/modules
 
+# Create update-initramfs hook to update u-boot images
+mkdir -p $MOUNTPOINT/etc/initramfs/post-update.d
+cat << EOF > $MOUNTPOINT/etc/initramfs/post-update.d/update-u-boot
+#!/bin/sh
+#
+# update-u-boot update-initramfs hook to update u-boot images
+# Distributable under the terms of the GNU GPL version 3.
+
+KERNELRELEASE=\$1
+INITRAMFS=\$2
+
+# Create uInitrd under /boot
+mkimage -A arm -O linux -T ramdisk -C none -a 0 -e 0 -n initramfs -d \$INITRAMFS /boot/uInitrd-\$KERNELRELEASE
+
+EOF
+chmod +x $MOUNTPOINT/etc/initramfs/post-update.d/update-u-boot
+
 # Create script to be run inside Debian chroot
 cat << EOF > $MOUNTPOINT/var/tmp/finalstage.sh
 #!/bin/sh
@@ -218,9 +235,6 @@ update-initramfs -c -k $KERNELRELEASE
 
 # Create uImage under /boot
 mkimage -A arm -O linux -T kernel -C none -a 80008000 -e 80008000 -n $KERNELRELEASE -d /boot/zImage-$KERNELRELEASE /boot/uImage-$KERNELRELEASE
-
-# Create uInitrd under /boot
-mkimage -A arm -O linux -T ramdisk -C none -a 0 -e 0 -n initramfs -d /boot/initrd.img-$KERNELRELEASE /boot/uInitrd-$KERNELRELEASE
 
 # Install non-free packages
 apt-get update
