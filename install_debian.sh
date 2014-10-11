@@ -224,7 +224,7 @@ chmod +x $MOUNTPOINT/etc/initramfs/post-update.d/update-u-boot
 cat << EOF > $MOUNTPOINT/var/tmp/finalstage.sh
 #!/bin/sh
 #
-# configure_u-boot.sh Configures U-Boot under Maemo
+# finalstage.sh Script to be run inside Debian chroot
 # Distributable under the terms of the GNU GPL version 3.
 
 set -e
