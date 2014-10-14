@@ -220,6 +220,19 @@ mkimage -A arm -O linux -T ramdisk -C none -a 0 -e 0 -n initramfs -d \$INITRAMFS
 EOF
 chmod +x $MOUNTPOINT/etc/initramfs/post-update.d/update-u-boot
 
+# Create u-boot commands
+cat << EOF > $MOUNTPOINT/boot/u-boot.cmd
+setenv mmcnum 0
+setenv mmcpart $SLICE
+setenv mmctype $FSTYPE
+setenv bootargs root=$ROOTDEVICE $CMDLINE
+setenv setup_omap_atag
+setenv mmckernfile /boot/uImage-$KERNELRELEASE
+setenv mmcinitrdfile /boot/uInitrd-$KERNELRELEASE
+setenv mmcscriptfile
+run trymmckerninitrdboot
+EOF
+
 # Create script to be run inside Debian chroot
 cat << EOF > $MOUNTPOINT/var/tmp/finalstage.sh
 #!/bin/sh
@@ -238,6 +251,9 @@ update-initramfs -c -k $KERNELRELEASE
 
 # Create uImage under /boot
 mkimage -A arm -O linux -T kernel -C none -a 80008000 -e 80008000 -n $KERNELRELEASE -d /boot/zImage-$KERNELRELEASE /boot/uImage-$KERNELRELEASE
+
+# Create boot.scr
+mkimage -A arm -O linux -T script -C none -a 0 -e 0 -n debian900 -d /boot/u-boot.cmd /boot.scr
 
 # Install non-free packages
 apt-get update
