@@ -204,7 +204,7 @@ rm $MOUNTPOINT/lib/modules/$KERNELRELEASE/build $MOUNTPOINT/lib/modules/$KERNELR
 printf "omaplfb\nsd_mod\nomap_hsmmc\nmmc_block\nomap_wdt\ntwl4030_wdt\n" >> $MOUNTPOINT/etc/initramfs-tools/modules
 
 # Configure kernel modules to load on boot
-echo "g_nokia" >> /etc/modules
+echo "g_nokia" >> $MOUNTPOINT/etc/modules
 
 # Create update-initramfs hook to update u-boot images
 mkdir -p $MOUNTPOINT/etc/initramfs/post-update.d
