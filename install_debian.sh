@@ -167,6 +167,8 @@ iface usb0 inet static
 	address $USB_ADDRESS
 	netmask $USB_NETMASK
 	gateway $USB_GATEWAY
+	pre-up modprobe g_nokia
+	post-down rmmod g_nokia
 EOF
 
 # Create X11 configuration file
