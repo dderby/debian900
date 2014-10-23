@@ -178,9 +178,9 @@ Section "InputClass"
 	Identifier "calibration"
 	MatchProduct "TSC2005 touchscreen"
 	Option "Calibration" "216 3910 3747 245"
-	Option "EmulateThirdButton" "1"
-	Option "EmulateThirdButtonTimeout" "30"
-	Option "EmulateThirdButtonMoveThreshold" "30"
+	Option "EmulateThirdButton" "$EMULATETHIRDBUTTON"
+	Option "EmulateThirdButtonTimeout" "$EMULATETHIRDBUTTONTIMEOUT"
+	Option "EmulateThirdButtonMoveThreshold" "$EMULATETHIRDBUTTONMOVETHRESHOLD"
 	Option "SwapAxes" "0"
 EndSection
 EOF
