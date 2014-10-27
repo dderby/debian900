@@ -145,7 +145,7 @@ EOF
 
 # Change power button behaviour
 if [ x${POWER_BUTTON_ACTION:-} != x ]; then
-	sed -i 's/\(action=\).*$/\1'$POWER_BUTTON_ACTION'/' $MOUNTPOINT/etc/acpi/events/powerbtn-acpi-suppordt
+	sed -i 's/\(action=\).*$/\1'$POWER_BUTTON_ACTION'/' $MOUNTPOINT/etc/acpi/events/powerbtn-acpi-support
 fi
 
 # Create network interface configuration
