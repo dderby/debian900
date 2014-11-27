@@ -197,7 +197,7 @@ echo 'SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="?*", ATTR{
 cp $ZIMAGE $MOUNTPOINT/boot/zImage-$KERNELRELEASE
 
 # Copy kernel modules to Debian
-cp -r $KERNELMODULES $MOUNTPOINT/lib
+cp -R $KERNELMODULES $MOUNTPOINT/lib
 
 # Remove stale symlinks
 rm $MOUNTPOINT/lib/modules/$KERNELRELEASE/build $MOUNTPOINT/lib/modules/$KERNELRELEASE/source
