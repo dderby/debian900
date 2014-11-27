@@ -49,8 +49,5 @@ nice $NICENESS make -j $JOBS
 # Build kernel modules
 nice $NICENESS make -j $JOBS modules_install
 
-# Build DT for N900
-nice $NICENESS make -j $JOBS omap3-n900.dtb
-
 # Append DT to kernel image
 cat arch/arm/boot/dts/omap3-n900.dtb >> arch/arm/boot/zImage
