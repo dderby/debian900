@@ -40,8 +40,8 @@ nice $NICENESS make -j $JOBS rx51_defconfig
 sed -i -e 's/\(CONFIG_SYSFS_DEPRECATED\)=y/# \1 is not set/' \
 	-e '/CONFIG_SYSFS_DEPRECATED_V2/d' .config
 
-# Disable CONFIG_PHYLIB due to bug in Linux 3.16-rc1
-sed -i -e 's/\(CONFIG_PHYLIB\)=m/# \1 is not set/' .config
+# Disable PHYLIB if building Linux 3.16-rc1 due to dependency cycle bug that breaks depmod
+test `cat include/config/kernel.release` = "3.16.0-rc1+" && sed -i 's/\(CONFIG_PHYLIB\)=m/# \1 is not set/' .config
 
 # Build kernel
 nice $NICENESS make -j $JOBS
