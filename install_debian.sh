@@ -370,4 +370,4 @@ EOF
 # Unset trap on exit
 trap - 0
 
-printf "\nStage 1 of installation complete.\nRun configure_u-boot.sh on N900 to complete installation.\n"
+printf "\nStage 1 of installation complete.\nCopy configure_u-boot.sh to the N900 and execute it to complete installation.\n"

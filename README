@@ -49,7 +49,8 @@ removed before the script can be run again.
 
 - Unmount SD card.
 
-- Run configure_u-boot.sh on your N900 to complete the installation.
+- Copy configure_u-boot.sh to your N900 and execute it to complete the
+installation.
 
 
 LICENCE
