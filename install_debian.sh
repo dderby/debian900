@@ -137,7 +137,7 @@ cat << EOF > $MOUNTPOINT/etc/fstab
 # /etc/fstab: static file system information.
 #
 # <file system> <mount point>   <type>  <options>       <dump>  <pass>
-$ROOTDEVICE	/	$FSTYPE	errors=remount-ro,noatime	0	0
+$ROOTDEVICE	/	$FSTYPE	errors=remount-ro,noatime	0	1
 proc	/proc	proc	nodev,noexec,nosuid	0	0
 none	/tmp	tmpfs	noatime	0	0
 $SWAPDEVICE	none	swap	sw	0	0
