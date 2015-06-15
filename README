@@ -26,6 +26,7 @@ An N900 with pali's U-Boot installed.
 A Linux PC with the following:
 - A POSIX compatible shell
 - GCC cross compiler for ARM Cortex-A processors
+- QEMU with support for ARM emulation
 - qemu-debootstrap
 - Internet access
 

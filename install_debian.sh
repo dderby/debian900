@@ -60,7 +60,7 @@ DIR=`dirname $0`
 test `id -u` -eq 0 || abort "Must be root"
 
 # Check for presence of required utilities
-UTILS="mount id cut chroot sed awk qemu-debootstrap wget fold"
+UTILS="mount id cut chroot sed awk qemu-debootstrap qemu-arm-static wget fold"
 for util in $UTILS; do
 	command -pv $util > /dev/null || abort "$util not found"
 done
