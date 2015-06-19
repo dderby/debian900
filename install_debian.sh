@@ -101,19 +101,25 @@ test xlost+found = x`ls $MOUNTPOINT` || abort "Filesystem already contains data 
 SLICE=`awk '{ if ($2 == "'$MOUNTPOINT'") print substr($1, length($1), 1) }' < /proc/mounts`
 ROOTDEVICE=/dev/mmcblk0p$SLICE
 
-# Print disclaimer
-echo "DISCLAIMER: Care has been taken to ensure that these scripts are safe to run however should they happen break something or mess anything up, the author takes no responsibility whatsoever.  Use at your own risk!" | fold -s
-printf "Continue? Y/[N]: "
-read disclaimer
-: ${disclaimer:=}
-test "x$disclaimer" = xY || test "x$disclaimer" = xy || exit 1
+: ${SUPPRESS_DISCLAIMER:=}
+if [ "x$SUPPRESS_DISCLAIMER" != xY ] && [ "x$SUPPRESS_DISCLAIMER" != xy ]; then
+	# Print disclaimer
+	echo "DISCLAIMER: Care has been taken to ensure that these scripts are safe to run however should they happen break something or mess anything up, the author takes no responsibility whatsoever.  Use at your own risk!" | fold -s
+	printf "Continue? Y/[N]: "
+	read disclaimer
+	: ${disclaimer:=}
+	test "x$disclaimer" = xY || test "x$disclaimer" = xy || exit 1
+fi
 
-# Print non-free package warning
-echo "WARNING: This script enables non-free repositories in order to install the wireless network adapter." | fold -s
-printf "Continue? Y/[N]: "
-read warning
-: ${warning:=}
-test "x$warning" = xY || test "x$warning" = xy || exit 1
+: ${SUPPRESS_WARNING:=}
+if [ "x$SUPPRESS_WARNING" != xY ] && [ "x$SUPPRESS_WARNING" != xy ]; then
+	# Print non-free package warning
+	echo "WARNING: This script enables non-free repositories in order to install the wireless network adapter." | fold -s
+	printf "Continue? Y/[N]: "
+	read warning
+	: ${warning:=}
+	test "x$warning" = xY || test "x$warning" = xy || exit 1
+fi
 
 # Set umask
 umask $UMASK
