@@ -134,7 +134,7 @@ qemu-debootstrap --arch=$ARCH --variant=minbase --include=$ESSENTIAL,$RECOMMENDE
 echo "deb $MIRROR $RELEASE main contrib non-free" > $MOUNTPOINT/etc/apt/sources.list
 
 if [ $RELEASE != "unstable" ]; then
-	printf "deb $MIRROR $RELEASE-updates main contrib non-free\ndeb http://security.debian.org/ $RELEASE/updates main contrib non-free\n" >> $MOUNTPOINT/etc/apt/sources.list
+	printf "deb %s %s-updates main contrib non-free\ndeb http://security.debian.org/ %s/updates main contrib non-free\n" $MIRROR $RELEASE $RELEASE >> $MOUNTPOINT/etc/apt/sources.list
 fi
 
 # Set up hostname
@@ -350,14 +350,14 @@ abort()
 }
 
 # Hardware check
-test x\`awk '/product/ { print \$2 }' < /proc/component_version\` = xRX-51 || abort "Must be executed on N900 under Maemo"
+test x\$(awk '/product/ { print \$2 }' < /proc/component_version) = xRX-51 || abort "Must be executed on N900 under Maemo"
 
 # Check that pali's U-Boot is installed
-UBOOTVERSION=\`dpkg -l u-boot-tools | grep ^ii | awk '{ print \$3 }' | cut -c 1-4\`
+UBOOTVERSION=\$(dpkg -l u-boot-tools | grep ^ii | awk '{ print \$3 }' | cut -c 1-4)
 test \$UBOOTVERSION -ge 2013 || abort "Compatible U-Boot version not found"
 
 # Check user
-test \`id -u\` -eq 0 || abort "Must be root"
+test \$(id -u) -eq 0 || abort "Must be root"
 
 # Ensure that bootmenu.d directory exists
 mkdir -p /etc/bootmenu.d
