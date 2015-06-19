@@ -30,6 +30,9 @@ DIR=`dirname $0`
 . $DIR/kernel.conf
 . $DIR/debian.conf
 
+# Source optional user configuration file
+test -r $DIR/user.conf && . $DIR/user.conf
+
 # Use "set -u" to ensure that all required variables are set
 : $MOUNTPOINT
 : $FSTYPE
