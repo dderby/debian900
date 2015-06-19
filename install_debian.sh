@@ -17,7 +17,7 @@ clean_up()
 	trap - 0 1 2 15
 	
 	for path in $MOUNTPOINT/dev/pts $MOUNTPOINT/dev $MOUNTPOINT/proc; do
-		test `grep -q $path /proc/mounts` && umount $path
+		grep -q $path /proc/mounts && umount $path
 	done
 	
 	echo "Installation failed" >&2
