@@ -176,8 +176,6 @@ iface usb0 inet static
 	address $USB_ADDRESS
 	netmask $USB_NETMASK
 	gateway $USB_GATEWAY
-	pre-up modprobe g_nokia
-	post-down rmmod g_nokia
 EOF
 
 # Create X11 configuration file
@@ -194,14 +192,9 @@ Section "InputClass"
 EndSection
 EOF
 
-# This temporary workaround syncs the OS clock with the RTC on system boot
-sed -i '/exit 0/d' $MOUNTPOINT/etc/rc.local
-printf "hwclock -u -s\nexit 0\n" >> $MOUNTPOINT/etc/rc.local
-
 # This temporary workaround prevents udev from changing the wlan0 device name
-echo "# Unknown net device (/devices/68000000.ocp/480ba000.spi/spi_master/spi4/spi4.0/net/wlan0) (wl1251)" > $MOUNTPOINT/etc/udev/rules.d/70-persistent-net.rules
+echo "# Unknown net device (/devices/platform/68000000.ocp/480ba000.spi/spi_master/spi4/spi4.0/net/wlan0) (wl1251)" > $MOUNTPOINT/etc/udev/rules.d/70-persistent-net.rules
 echo 'SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="?*", ATTR{dev_id}=="0x0", ATTR{type}=="1", KERNEL=="wlan*", NAME="wlan0"' >> $MOUNTPOINT/etc/udev/rules.d/70-persistent-net.rules
-
 # Copy kernel zImage to Debian
 cp $ZIMAGE $MOUNTPOINT/boot/zImage-$KERNELRELEASE
 
