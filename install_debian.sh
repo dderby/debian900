@@ -278,7 +278,7 @@ sed -i -e '/^XKBMODEL/ s/".*"/"nokiarx51"/' \
 	-e '/^XKBOPTIONS/ s/".*"/"${XKBOPTIONS:-}"/' /etc/default/keyboard
 echo 'KMAP="/etc/console/boottime.kmap.gz"' >> /etc/default/keyboard
 
-# Run install-keymap on boot as it cannot be run under a qemu chroot
+# Run interactive commands on boot along with install-keymap which cannot be run under a qemu chroot
 cat > /etc/init.d/runonce << EOF2
 #!/bin/sh
 ### BEGIN INIT INFO
@@ -291,22 +291,6 @@ cat > /etc/init.d/runonce << EOF2
 # X-Interactive:     true
 ### END INIT INFO
 install-keymap /var/tmp/rx51_us.map
-rm /etc/init.d/runonce
-update-rc.d runonce remove
-EOF2
-
-chmod +x /etc/init.d/runonce
-update-rc.d runonce defaults
-
-# X11 keyboard set up
-for patch in $XKB_PATCHES; do
-	wget --no-check-certificate -O /var/tmp/\$patch $XKB_URL\$patch
-	patch /usr/share/X11/xkb/symbols/nokia_vndr/rx-51 < /var/tmp/\$patch
-done
-
-# Reconfigure locales and time zone
-dpkg-reconfigure locales
-dpkg-reconfigure tzdata
 
 # Set root password
 echo "Setting root user password..."
@@ -319,6 +303,23 @@ echo "Setting $USERNAME user password..."
 useradd -c "$REALNAME" -m -s /bin/bash $USERNAME
 while ! passwd $USERNAME; do
 	:
+done
+
+# Reconfigure locales and time zone
+dpkg-reconfigure locales
+dpkg-reconfigure tzdata
+
+rm /etc/init.d/runonce
+update-rc.d runonce remove
+EOF2
+
+chmod +x /etc/init.d/runonce
+update-rc.d runonce defaults
+
+# X11 keyboard set up
+for patch in $XKB_PATCHES; do
+	wget --no-check-certificate -O /var/tmp/\$patch $XKB_URL\$patch
+	patch /usr/share/X11/xkb/symbols/nokia_vndr/rx-51 < /var/tmp/\$patch
 done
 EOF
 
