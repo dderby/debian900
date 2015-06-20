@@ -44,6 +44,17 @@ sed -i -e 's/\(CONFIG_SYSFS_DEPRECATED\)=y/# \1 is not set/' \
 # Disable PHYLIB if building Linux 3.16-rc1 due to dependency cycle bug that breaks depmod
 test $GIT_BRANCH = "v3.16-rc1-n900" && sed -i 's/\(CONFIG_PHYLIB\)=m/# \1 is not set/' .config
 
+if [ x$ENABLE_LXC = xY ] || [ x$ENABLE_LXC = xy ]; then
+	# Enable LXC support
+	sed -i -e 's/# \(CONFIG_CGROUP_DEVICE\) is not set/\1=y/' \
+		-e 's/# \(CONFIG_CGROUP_CPUACCT\) is not set/\1=y/' \
+		-e 's/# \(CONFIG_MEMCG\) is not set/\1=y\n# CONFIG_MEMCG_SWAP is not set\n# CONFIG_MEMCG_KMEM is not set/' \
+		-e 's/# \(CONFIG_NAMESPACES\) is not set/\1=y\nCONFIG_UTS_NS=y\nCONFIG_IPC_NS=y\nCONFIG_USER_NS=y\nCONFIG_PID_NS=y\nCONFIG_NET_NS=y/' \
+		-e 's/# \(CONFIG_MACVLAN\) is not set/\1=y\n# CONFIG_MACVTAP is not set/' \
+		-e 's/# \(CONFIG_VETH\) is not set/\1=y/' \
+		-e 's/# \(CONFIG_DEVPTS_MULTIPLE_INSTANCES\) is not set/\1=y/' .config
+fi
+
 # Build kernel
 nice $NICENESS make -j $JOBS
 
