@@ -60,6 +60,11 @@ if [ x$ENABLE_OVERLAYFS = xY ] || [ x$ENABLE_OVERLAYFS = xy ]; then
 	sed -i 's/# \(CONFIG_OVERLAY_FS\) is not set/\1=y/' .config
 fi
 
+if [ x$ENABLE_RFKILL = xY ] || [ x$ENABLE_RFKILL = xy ]; then
+	# Enable rfkill support
+	sed -i 's/# \(CONFIG_RFKILL\) is not set/\1=y\n# CONFIG_RFKILL_INPUT is not set\n# CONFIG_RFKILL_GPIO is not set\n# CONFIG_USB_HSO is not set\n# CONFIG_RADIO_WL128X is not set\n# CONFIG_R8723AU is not set/' .config
+fi
+
 # Build kernel
 nice $NICENESS make -j $JOBS
 
