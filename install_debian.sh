@@ -48,7 +48,6 @@ test -r $DIR/debian.conf.local && . $DIR/debian.conf.local
 : $XKB_PATCHES
 : $XKBLAYOUT
 : $ESSENTIAL
-: $RECOMMENDED
 : $NONFREE
 : $INIT
 : $USB_ADDRESS
@@ -127,7 +126,7 @@ umask $UMASK
 trap clean_up 0 1 2 15
 
 # Bootstrap Debian system
-qemu-debootstrap --arch=$ARCH --variant=minbase --include=$ESSENTIAL,$RECOMMENDED $RELEASE $MOUNTPOINT $MIRROR
+qemu-debootstrap --arch=$ARCH --variant=minbase --include=$ESSENTIAL${RECOMMENDED:+,$RECOMMENDED}${EXTRA:+,$EXTRA} $RELEASE $MOUNTPOINT $MIRROR
 
 # Configure APT data sources
 echo "deb $MIRROR $RELEASE main contrib non-free" > $MOUNTPOINT/etc/apt/sources.list
