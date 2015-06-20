@@ -163,6 +163,10 @@ $MYDOCSDEVICE	/srv/fremantle/home/user/MyDocs	vfat	nodev,noexec,nosuid,noatime,n
 EOF
 fi
 
+if [ x$ENABLE_LXC = xY ] || [ x$ENABLE_LXC = xy ]; then
+	echo "cgroup	/sys/fs/cgroup	cgroup	defaults	0	0" >> $MOUNTPOINT/etc/fstab
+fi
+
 # Change power button behaviour
 if [ x${POWER_BUTTON_ACTION:-} != x ]; then
 	sed -i 's/\(action=\).*$/\1'$POWER_BUTTON_ACTION'/' $MOUNTPOINT/etc/acpi/events/powerbtn-acpi-support
