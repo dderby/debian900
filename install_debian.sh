@@ -42,6 +42,9 @@ test -r $DIR/debian.conf.local && . $DIR/debian.conf.local
 : $HOSTNAME
 : $CMDLINE
 : $SWAPDEVICE
+: $MOUNTFREMANTLE
+: $HOMEDEVICE
+: $MYDOCSDEVICE
 : $BOOTSEQUENCE
 : $KEYMAP_URL
 : $XKB_URL
@@ -149,6 +152,16 @@ proc	/proc	proc	nodev,noexec,nosuid	0	0
 none	/tmp	tmpfs	noatime	0	0
 $SWAPDEVICE	none	swap	sw	0	0
 EOF
+
+if [ "x$MOUNTFREMANTLE" = xY ] || [ "x$MOUNTFREMANTLE" = xy ]; then
+	mkdir -p $MOUNTPOINT/srv/fremantle
+	cat << EOF >> $MOUNTPOINT/etc/fstab
+/dev/ubi0_0	/srv/fremantle	ubifs	defaults,noatime	0	0
+$HOMEDEVICE	/srv/fremantle/home	ext3	noatime,errors=continue,commit=1,data=writeback	0	0
+/srv/fremantle/home/opt	/srv/fremantle/opt	none	bind	0	0
+$MYDOCSDEVICE	/srv/fremantle/home/user/MyDocs	vfat	nodev,noexec,nosuid,noatime,nodiratime,utf8,uid=29999,shortname=mixed,dmask=000,fmask=0133,rodir	0	0
+EOF
+fi
 
 # Change power button behaviour
 if [ x${POWER_BUTTON_ACTION:-} != x ]; then
