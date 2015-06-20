@@ -259,7 +259,7 @@ mkimage -A arm -O linux -T kernel -C none -a 80008000 -e 80008000 -n $KERNELRELE
 # Create boot.scr
 mkimage -A arm -O linux -T script -C none -a 0 -e 0 -n debian900 -d /boot/u-boot.cmd /boot.scr
 
-# Install non-free packages
+# Install non-free packages and System V init
 apt-get update
 apt-get -y --no-install-recommends install $NONFREE $INIT
 
