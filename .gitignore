@@ -1,4 +1,5 @@
 configure_u-boot.sh
 freemangordons-linux-n900
 linux-n900
-user.conf
+debian.conf.local
+kernel.conf.local

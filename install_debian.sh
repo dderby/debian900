@@ -28,10 +28,9 @@ DIR=`dirname $0`
 
 # Source configuration files
 . $DIR/kernel.conf
+test -r $DIR/kernel.conf.local && . $DIR/kernel.conf.local
 . $DIR/debian.conf
-
-# Source optional user configuration file
-test -r $DIR/user.conf && . $DIR/user.conf
+test -r $DIR/debian.conf.local && . $DIR/debian.conf.local
 
 # Use "set -u" to ensure that all required variables are set
 : $MOUNTPOINT

@@ -14,8 +14,9 @@ abort()
 
 DIR=`dirname $0`
 
-# Source configuration file
+# Source configuration files
 . $DIR/kernel.conf
+test -r $DIR/kernel.conf.local && . $DIR/kernel.conf.local
 
 # Check for presense of utilities
 UTILS="id git ${CROSS_COMPILE}gcc nice make grep sed"
