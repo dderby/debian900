@@ -55,6 +55,11 @@ if [ x$ENABLE_LXC = xY ] || [ x$ENABLE_LXC = xy ]; then
 		-e 's/# \(CONFIG_DEVPTS_MULTIPLE_INSTANCES\) is not set/\1=y/' .config
 fi
 
+if [ x$ENABLE_OVERLAYFS = xY ] || [ x$ENABLE_OVERLAYFS = xy ]; then
+	# Enable OverlayFS support
+	sed -i 's/# \(CONFIG_OVERLAY_FS\) is not set/\1=y/' .config
+fi
+
 # Build kernel
 nice $NICENESS make -j $JOBS
 
