@@ -35,7 +35,7 @@ git checkout $GIT_BRANCH
 export ARCH CROSS_COMPILE INSTALL_MOD_PATH
 
 # Build default config for N900
-nice $NICENESS make -j $JOBS rx51_defconfig
+nice -n $NICENESS make -j $JOBS rx51_defconfig
 
 # Disable CONFIG_SYSFS_DEPRECATED which is only needed for Maemo
 sed -i -e 's/\(CONFIG_SYSFS_DEPRECATED\)=y/# \1 is not set/' \
@@ -66,10 +66,10 @@ if [ x$ENABLE_RFKILL = xY ] || [ x$ENABLE_RFKILL = xy ]; then
 fi
 
 # Build kernel
-nice $NICENESS make -j $JOBS
+nice -n $NICENESS make -j $JOBS
 
 # Build kernel modules
-nice $NICENESS make -j $JOBS modules_install
+nice -n $NICENESS make -j $JOBS modules_install
 
 # Append DT to kernel image
 cat arch/arm/boot/dts/omap3-n900.dtb >> arch/arm/boot/zImage
