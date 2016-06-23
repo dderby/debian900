@@ -27,7 +27,7 @@ done
 test `id -u` -ne 0 || abort "Must not be root"
 
 # Checkout kernel
-test -d $GIT_REPO_NAME && echo "$GIT_REPO_NAME directory already exists.  Skipping cloning of Git repository." || git clone $GIT_KERNEL_URI
+test -d $GIT_REPO_NAME && echo "$GIT_REPO_NAME directory already exists.  Skipping cloning of Git repository." || git clone $GIT_KERNEL_URI --depth $GIT_CLONE_DEPTH
 cd $GIT_REPO_NAME
 git checkout $GIT_BRANCH
 
