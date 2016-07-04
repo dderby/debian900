@@ -96,7 +96,7 @@ test -d $KERNELMODULES/$KERNELRELEASE || abort "Kernel modules not found"
 test x$FSTYPE = x`awk '{ if ($2 == "'$MOUNTPOINT'") print $3 }' < /proc/mounts` || abort "Unexpected filesystem or filesystem not mounted"
 
 # Check that mounted filesystem contains nothing but lost+found
-test xlost+found = x`ls $MOUNTPOINT` || abort "Filesystem already contains data or is not formatted correctly"
+test xlost+found = "x`ls $MOUNTPOINT`" || abort "Filesystem already contains data or is not formatted correctly"
 
 # Set up the root device name
 SLICE=`awk '{ if ($2 == "'$MOUNTPOINT'") print substr($1, length($1), 1) }' < /proc/mounts`
