@@ -37,7 +37,7 @@ test -r $DIR/debian.conf.local && . $DIR/debian.conf.local
 : $FSTYPE
 : $UMASK
 : $RELEASE
-: $ARCH
+: $DEBARCH
 : $MIRROR
 : $HOSTNAME
 : $CMDLINE
@@ -129,7 +129,7 @@ umask $UMASK
 trap clean_up 0 1 2 15
 
 # Bootstrap Debian system
-qemu-debootstrap --arch=$ARCH --variant=minbase --include=$ESSENTIAL${RECOMMENDED:+,$RECOMMENDED}${EXTRA:+,$EXTRA} $RELEASE $MOUNTPOINT $MIRROR
+qemu-debootstrap --arch=$DEBARCH --variant=minbase --include=$ESSENTIAL${RECOMMENDED:+,$RECOMMENDED}${EXTRA:+,$EXTRA} $RELEASE $MOUNTPOINT $MIRROR
 
 # Configure APT data sources
 echo "deb $MIRROR $RELEASE main contrib non-free" > $MOUNTPOINT/etc/apt/sources.list
@@ -372,8 +372,8 @@ test \$(id -u) -eq 0 || abort "Must be root"
 mkdir -p /etc/bootmenu.d
 
 # Create U-Boot configuration file
-cat > /etc/bootmenu.d/$BOOTSEQUENCE-Debian_GNU_Linux-$RELEASE-$ARCH-$KERNELRELEASE.item << EOF2
-ITEM_NAME="Debian GNU/Linux $RELEASE $ARCH $KERNELRELEASE"
+cat > /etc/bootmenu.d/$BOOTSEQUENCE-Debian_GNU_Linux-$RELEASE-$DEBARCH-$KERNELRELEASE.item << EOF2
+ITEM_NAME="Debian GNU/Linux $RELEASE $DEBARCH $KERNELRELEASE"
 ITEM_DEVICE="\\\${EXT_CARD}p${ROOTDEVICE##*p}"
 ITEM_FSTYPE="$FSTYPE"
 ITEM_KERNEL="/boot/uImage-$KERNELRELEASE"
