@@ -27,9 +27,9 @@ done
 test `id -u` -ne 0 || abort "Must not be root"
 
 # Checkout kernel
-test -d $GIT_REPO_NAME && echo "$GIT_REPO_NAME directory already exists.  Skipping cloning of Git repository." || git clone $GIT_KERNEL_URI
+test -d $GIT_REPO_NAME && echo "$GIT_REPO_NAME directory already exists.  Skipping cloning of Git repository." || git clone -b $GIT_BRANCH ${GIT_CLONE_DEPTH:+--depth $GIT_CLONE_DEPTH} $GIT_KERNEL_URI
+
 cd $GIT_REPO_NAME
-git checkout $GIT_BRANCH
 
 # Export environment variables needed for build
 export ARCH CROSS_COMPILE INSTALL_MOD_PATH
