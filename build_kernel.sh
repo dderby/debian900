@@ -19,7 +19,7 @@ DIR=`dirname $0`
 test -r $DIR/kernel.conf.local && . $DIR/kernel.conf.local
 
 # Check for presense of utilities
-UTILS="id git ${CROSS_COMPILE}gcc nice make grep sed"
+UTILS="id git ${CROSS_COMPILE}gcc nice make grep sed dpkg dpkg-genchanges dpkg-gencontrol dpkg-source"
 for util in $UTILS; do
 	command -pv $util > /dev/null || abort "$util not found"
 done
@@ -32,7 +32,7 @@ test -d $GIT_REPO_NAME && echo "$GIT_REPO_NAME directory already exists.  Skippi
 cd $GIT_REPO_NAME
 
 # Export environment variables needed for build
-export ARCH CROSS_COMPILE INSTALL_MOD_PATH
+export ARCH CROSS_COMPILE
 
 # Build default config for N900
 nice -n $NICENESS make -j $JOBS rx51_defconfig
@@ -65,11 +65,15 @@ if [ x$ENABLE_RFKILL = xY ] || [ x$ENABLE_RFKILL = xy ]; then
 	sed -i 's/# \(CONFIG_RFKILL\) is not set/\1=y\n# CONFIG_RFKILL_INPUT is not set\n# CONFIG_RFKILL_GPIO is not set\n# CONFIG_USB_HSO is not set\n# CONFIG_RADIO_WL128X is not set\n# CONFIG_R8723AU is not set/' .config
 fi
 
-# Build kernel
-nice -n $NICENESS make -j $JOBS
+# Modify postinst script to append the device tree and then build the U-Boot kernel image
+cat << EOF > scripts/package/insert_postinst_cmds.sh
+#!/bin/sh
+sed -i '/exit 0/i \\
+cat /usr/lib/linux-image-'\$1'/omap3-n900.dtb >> /boot/vmlinuz-'\$1' \\
+mkimage -A arm -O linux -T kernel -C none -a 80008000 -e 80008000 -n '\$1' -d /boot/vmlinuz-'\$1' /boot/uImage-'\$1 debian/tmp/DEBIAN/postinst
+EOF
+chmod +x scripts/package/insert_postinst_cmds.sh
+sed -i '/# Try to determine maintainer and email values/i scripts/package/insert_postinst_cmds.sh $version' scripts/package/builddeb
 
-# Build kernel modules
-nice -n $NICENESS make -j $JOBS modules_install
-
-# Append DT to kernel image
-cat arch/arm/boot/dts/omap3-n900.dtb >> arch/arm/boot/zImage
+# Build kernel and deb packages
+nice -n $NICENESS make -j $JOBS deb-pkg

@@ -60,7 +60,6 @@ ${DEBUG:+set -x}
 : $USB_GATEWAY
 : $USERNAME
 : $REALNAME
-: $INSTALL_MOD_PATH
 
 # Check user
 test `id -u` -eq 0 || abort "Must be root"
@@ -74,25 +73,12 @@ done
 # Use GIT_REPO_NAME as the relative path of the kernel source unless KERNELSOURCE was explicitly specified in config file
 : ${KERNELSOURCE:=$GIT_REPO_NAME}
 
-# Set the path to the zImage
-: ${ZIMAGE:=$KERNELSOURCE/arch/arm/boot/zImage}
-
 # Get kernel release name
 KERNELRELEASE=`cat $KERNELSOURCE/include/config/kernel.release`
 : ${KERNELRELEASE:?}
 
-# Check for presence of zImage
-test -f $ZIMAGE || abort "zImage not found"
-
-# Set path to kernel modules
-if [ `echo $INSTALL_MOD_PATH | cut -c 1` = / ]; then
-	KERNELMODULES=$INSTALL_MOD_PATH/lib/modules
-else
-	KERNELMODULES=$KERNELSOURCE/$INSTALL_MOD_PATH/lib/modules
-fi
-
-# Check for presence of kernel modules
-test -d $KERNELMODULES/$KERNELRELEASE || abort "Kernel modules not found"
+# Get kernel deb name
+KERNELDEB=linux-image-"$KERNELRELEASE"_$KERNELRELEASE-`cat $KERNELSOURCE/.version`_armhf.deb
 
 # Check that filesystem has been mounted and is of expected type
 test x$FSTYPE = "x`awk '{ if ($2 == "'$MOUNTPOINT'") print $3 }' < /proc/mounts`" || abort "Unexpected filesystem or filesystem not mounted"
@@ -212,14 +198,9 @@ EOF
 # This temporary workaround prevents udev from changing the wlan0 device name
 echo "# Unknown net device (/devices/platform/68000000.ocp/480ba000.spi/spi_master/spi4/spi4.0/net/wlan0) (wl1251)" > $MOUNTPOINT/etc/udev/rules.d/70-persistent-net.rules
 echo 'SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="?*", ATTR{dev_id}=="0x0", ATTR{type}=="1", KERNEL=="wlan*", NAME="wlan0"' >> $MOUNTPOINT/etc/udev/rules.d/70-persistent-net.rules
-# Copy kernel zImage to Debian
-cp $ZIMAGE $MOUNTPOINT/boot/zImage-$KERNELRELEASE
 
-# Copy kernel modules to Debian
-cp -R $KERNELMODULES $MOUNTPOINT/lib
-
-# Remove stale symlinks
-rm $MOUNTPOINT/lib/modules/$KERNELRELEASE/build $MOUNTPOINT/lib/modules/$KERNELRELEASE/source
+# Copy kernel deb to Debian
+cp $KERNELSOURCE/../$KERNELDEB $MOUNTPOINT/var/tmp
 
 # Set up initramfs modules
 printf "omaplfb\nsd_mod\nomap_hsmmc\nmmc_block\nomap_wdt\ntwl4030_wdt\n" >> $MOUNTPOINT/etc/initramfs-tools/modules
@@ -265,14 +246,8 @@ set -e
 set -u
 ${DEBUG:+set -x}
 
-# Generate modules.dep and map files
-depmod $KERNELRELEASE
-
-# Generate an initramfs image
-update-initramfs -c -k $KERNELRELEASE
-
-# Create uImage under /boot
-mkimage -A arm -O linux -T kernel -C none -a 80008000 -e 80008000 -n $KERNELRELEASE -d /boot/zImage-$KERNELRELEASE /boot/uImage-$KERNELRELEASE
+# Install kernel
+dpkg -i --force-architecture /var/tmp/$KERNELDEB
 
 # Create boot.scr
 mkimage -A arm -O linux -T script -C none -a 0 -e 0 -n debian900 -d /boot/u-boot.cmd /boot.scr
