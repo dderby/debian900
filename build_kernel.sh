@@ -35,7 +35,7 @@ cd $GIT_REPO_NAME
 export ARCH CROSS_COMPILE
 
 # Build default config for N900
-nice -n $NICENESS make -j $JOBS rx51_defconfig
+make -j $JOBS rx51_defconfig
 
 # Disable CONFIG_SYSFS_DEPRECATED which is only needed for Maemo
 sed -i -e 's/\(CONFIG_SYSFS_DEPRECATED\)=y/# \1 is not set/' \
@@ -76,4 +76,4 @@ chmod +x scripts/package/insert_postinst_cmds.sh
 sed -i '/# Try to determine maintainer and email values/i scripts/package/insert_postinst_cmds.sh $version' scripts/package/builddeb
 
 # Build kernel and deb packages
-nice -n $NICENESS make -j $JOBS deb-pkg
+${NICENESS:+nice -n $NICENESS }make -j $JOBS deb-pkg
