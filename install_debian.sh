@@ -93,7 +93,7 @@ fi
 test -d $KERNELMODULES/$KERNELRELEASE || abort "Kernel modules not found"
 
 # Check that filesystem has been mounted and is of expected type
-test x$FSTYPE = x`awk '{ if ($2 == "'$MOUNTPOINT'") print $3 }' < /proc/mounts` || abort "Unexpected filesystem or filesystem not mounted"
+test x$FSTYPE = "x`awk '{ if ($2 == "'$MOUNTPOINT'") print $3 }' < /proc/mounts`" || abort "Unexpected filesystem or filesystem not mounted"
 
 # Check that mounted filesystem contains nothing but lost+found
 test xlost+found = "x`ls $MOUNTPOINT`" || abort "Filesystem already contains data or is not formatted correctly"
