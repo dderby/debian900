@@ -32,6 +32,8 @@ test -r $DIR/kernel.conf.local && . $DIR/kernel.conf.local
 . $DIR/debian.conf
 test -r $DIR/debian.conf.local && . $DIR/debian.conf.local
 
+${DEBUG:+set -x}
+
 # Use "set -u" to ensure that all required variables are set
 : $MOUNTPOINT
 : $FSTYPE
@@ -129,7 +131,7 @@ umask $UMASK
 trap clean_up 0 1 2 15
 
 # Bootstrap Debian system
-qemu-debootstrap --arch=$DEBARCH --variant=minbase --include=$ESSENTIAL${RECOMMENDED:+,$RECOMMENDED}${EXTRA:+,$EXTRA} $RELEASE $MOUNTPOINT $MIRROR
+qemu-debootstrap ${DEBUG:+--verbose} --arch=$DEBARCH --variant=minbase --include=$ESSENTIAL${RECOMMENDED:+,$RECOMMENDED}${EXTRA:+,$EXTRA} $RELEASE $MOUNTPOINT $MIRROR
 
 # Configure APT data sources
 echo "deb $MIRROR $RELEASE main contrib non-free" > $MOUNTPOINT/etc/apt/sources.list
@@ -261,6 +263,7 @@ cat << EOF > $MOUNTPOINT/var/tmp/finalstage.sh
 
 set -e
 set -u
+${DEBUG:+set -x}
 
 # Generate modules.dep and map files
 depmod $KERNELRELEASE
@@ -351,6 +354,7 @@ cat << EOF > configure_u-boot.sh
 
 set -e
 set -u
+${DEBUG:+set -x}
 
 abort()
 {
