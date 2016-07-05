@@ -65,7 +65,7 @@ ${DEBUG:+set -x}
 test `id -u` -eq 0 || abort "Must be root"
 
 # Check for presence of required utilities
-UTILS="mount id cut chroot sed awk qemu-debootstrap qemu-arm-static wget fold"
+UTILS="mount id cut chroot sed awk qemu-debootstrap qemu-arm-static update-binfmts wget fold"
 for util in $UTILS; do
 	command -pv $util > /dev/null || abort "$util not found"
 done
@@ -85,6 +85,9 @@ test x$FSTYPE = "x`awk '{ if ($2 == "'$MOUNTPOINT'") print $3 }' < /proc/mounts`
 
 # Check that mounted filesystem contains nothing but lost+found
 test xlost+found = "x`ls $MOUNTPOINT`" || abort "Filesystem already contains data or is not formatted correctly"
+
+# Check that build system can execute ARM binaries
+update-binfmts --display qemu-arm | grep -q enable || abort "ARM executable binary format not registered"
 
 # Set up the root device name
 SLICE=`awk '{ if ($2 == "'$MOUNTPOINT'") print substr($1, length($1), 1) }' < /proc/mounts`
